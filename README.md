@@ -1,4 +1,4 @@
-# 🎓 ÜBUNGSBLATT: IoT-Wetterdaten mit MQTT & MongoDB (Node.js)
+# IoT-Wetterdaten mit MQTT & MongoDB (Node.js)
 
 ## 📋 Lernziele
 - MongoDB Atlas Cluster erstellen und verwalten
@@ -20,7 +20,7 @@
 
 ## 📦 TEIL 1: Installation & Setup (20 Min)
 
-### ✅ Schritt 1.1: Node.js Version überprüfen
+### Schritt 1.1: Node.js Version überprüfen
 
 Öffne ein **Terminal** (Windows: CMD oder PowerShell, Mac/Linux: Terminal) und gib ein:
 
@@ -34,7 +34,7 @@ Falls Node.js nicht installiert ist, lade es von https://nodejs.org herunter (LT
 
 ***
 
-### ✅ Schritt 1.2: Projektordner erstellen
+### Schritt 1.2: Projektordner erstellen
 
 ```bash
 mkdir wetter-iot-projekt
@@ -47,7 +47,7 @@ cd wetter-iot-projekt
 
 ***
 
-### ✅ Schritt 1.3: Node.js Projekt initialisieren
+### Schritt 1.3: Node.js Projekt initialisieren
 
 ```bash
 npm init -y
@@ -55,11 +55,11 @@ npm init -y
 
 **Erwartete Ausgabe:** Eine Datei `package.json` wird erstellt.
 
-**Was passiert hier?** Node.js erstellt eine Konfigurationsdatei für dein Projekt [1][2].
+**Was passiert hier?** Node.js erstellt eine Konfigurationsdatei für dein Projekt.
 
 ***
 
-### ✅ Schritt 1.4: Notwendige Pakete installieren
+### Schritt 1.4: Notwendige Pakete installieren
 
 ```bash
 npm install mqtt mongodb
@@ -72,11 +72,11 @@ added 25 packages, and audited 26 packages in 3s
 
 **Was wurde installiert?**
 - `mqtt` = MQTT-Client für Node.js (um Sensordaten zu empfangen)
-- `mongodb` = MongoDB-Treiber für Node.js (um Daten zu speichern) [3][1][2]
+- `mongodb` = MongoDB-Treiber für Node.js (um Daten zu speichern)
 
 ***
 
-### ✅ Schritt 1.5: MQTTX CLI installieren (für Simulation)
+### Schritt 1.5: MQTTX CLI installieren (für Simulation)
 
 ```bash
 npm install -g @emqx/mqttx-cli
@@ -87,13 +87,13 @@ npm install -g @emqx/mqttx-cli
 mqttx --version
 ```
 
-**Erwartete Ausgabe:** `1.9.10` oder höher [4]
+**Erwartete Ausgabe:** `1.9.10` oder höher
 
 ***
 
 ## 🌐 TEIL 2: MongoDB Atlas einrichten (15 Min)
 
-### ✅ Schritt 2.1: MongoDB Atlas Account erstellen
+### Schritt 2.1: MongoDB Atlas Account erstellen
 
 1. Öffne Browser und gehe zu: https://www.mongodb.com/cloud/atlas/register
 2. Registriere dich mit deiner **Schul-E-Mail**
@@ -102,7 +102,7 @@ mqttx --version
 
 ***
 
-### ✅ Schritt 2.2: Cluster konfigurieren
+### Schritt 2.2: Cluster konfigurieren
 
 **Einstellungen (exakt so auswählen):**
 - **Cloud Provider:** AWS
@@ -110,11 +110,11 @@ mqttx --version
 - **Cluster Tier:** M0 Sandbox (FREE)
 - **Cluster Name:** `weather-cluster` (oder eigener Name)
 
-Klicke auf "**Create Deployment**" und warte ~3 Minuten [5][6].
+Klicke auf "**Create Deployment**" und warte ~3 Minuten.
 
 ***
 
-### ✅ Schritt 2.3: Datenbank-Benutzer erstellen
+### Schritt 2.3: Datenbank-Benutzer erstellen
 
 **Wichtig:** Notiere diese Daten in einem Textdokument!
 
@@ -123,11 +123,11 @@ Klicke auf "**Create Deployment**" und warte ~3 Minuten [5][6].
 3. **Password:** Klicke "**Autogenerate Secure Password**" und KOPIERE das Passwort!
 4. Klicke "**Create Database User**"
 
-**⚠️ WICHTIG:** Speichere das Passwort! Du siehst es nur einmal [6].
+**⚠️ WICHTIG:** Speichere das Passwort! Du siehst es nur einmal.
 
 ***
 
-### ✅ Schritt 2.4: Netzwerkzugriff erlauben
+### Schritt 2.4: Netzwerkzugriff erlauben
 
 1. Im selben Popup: "**Where would you like to connect from?**"
 2. Wähle "**My Local Environment**"
@@ -137,11 +137,11 @@ Klicke auf "**Create Deployment**" und warte ~3 Minuten [5][6].
    - **Description:** `Allow All (Test Only)`
 5. Klicke "**Finish and Close**"
 
-**Erklärung:** MongoDB erlaubt nur Verbindungen von freigegebenen IP-Adressen. `0.0.0.0/0` = alle IPs (unsicher für Produktion, OK für Übung) [5][6].
+**Erklärung:** MongoDB erlaubt nur Verbindungen von freigegebenen IP-Adressen. `0.0.0.0/0` = alle IPs (unsicher für Produktion, OK für Übung).
 
 ***
 
-### ✅ Schritt 2.5: Connection String kopieren
+### Schritt 2.5: Connection String kopieren
 
 1. Klicke auf "**Connect**" bei deinem Cluster
 2. Wähle "**Connect your application**"
@@ -160,13 +160,13 @@ mongodb+srv://wetter_user:<password>@weather-cluster.xxxxx.mongodb.net/?retryWri
 mongodb+srv://wetter_user:aB3xT9pQ@weather-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
 ```
 
-7. Speichere diesen String in deinem Textdokument! [2][6]
+7. Speichere diesen String in deinem Textdokument!
 
 ***
 
 ## 🌦 TEIL 3: MQTT-Wetterdaten simulieren (15 Min)
 
-### ✅ Schritt 3.1: MQTT Broker Verbindung testen
+### Schritt 3.1: MQTT Broker Verbindung testen
 
 ```bash
 mqttx conn -h broker.emqx.io -p 1883
@@ -177,13 +177,13 @@ mqttx conn -h broker.emqx.io -p 1883
 ✔  Connected to broker.emqx.io
 ```
 
-**Was ist ein MQTT Broker?** Ein zentraler Server, der Nachrichten zwischen IoT-Geräten (Sensoren) und Anwendungen vermittelt. Wir nutzen `broker.emqx.io` (kostenloser, öffentlicher Broker) [3][1].
+**Was ist ein MQTT Broker?** Ein zentraler Server, der Nachrichten zwischen IoT-Geräten (Sensoren) und Anwendungen vermittelt. Wir nutzen `broker.emqx.io` (kostenloser, öffentlicher Broker) .
 
 Drücke `Ctrl+C` zum Beenden.
 
 ***
 
-### ✅ Schritt 3.2: Verfügbare Simulationsszenarien anzeigen
+### Schritt 3.2: Verfügbare Simulationsszenarien anzeigen
 
 ```bash
 mqttx ls --scenarios
@@ -197,11 +197,11 @@ weather   | Simulation to generate advanced weather station's data
 IEM       | Simulation to generate Industrial Energy Monitoring data
 ```
 
-**Wichtig:** Wir nutzen das `weather` Szenario! [7]
+**Wichtig:** Wir nutzen das `weather` Szenario!
 
 ***
 
-### ✅ Schritt 3.3: Wetterdaten-Simulation starten
+### Schritt 3.3: Wetterdaten-Simulation starten
 
 **Terminal 1 öffnen** und Simulation starten:
 
@@ -218,7 +218,7 @@ mqttx simulate weather -c 5 -h broker.emqx.io -t wetter/schweiz/gruppe1
 **⚠️ Wichtig:** Jede Gruppe nutzt ein eigenes Topic:
 - Gruppe 1: `wetter/schweiz/gruppe1`
 - Gruppe 2: `wetter/schweiz/gruppe2`
-- Gruppe 3: `wetter/schweiz/gruppe3` [7][1]
+- Gruppe 3: `wetter/schweiz/gruppe3` 
 
 **Erwartete Ausgabe:**
 ```
@@ -227,11 +227,11 @@ mqttx simulate weather -c 5 -h broker.emqx.io -t wetter/schweiz/gruppe1
 ◉  Sending message to topic "wetter/schweiz/gruppe1"
 ```
 
-**Lasse dieses Terminal geöffnet!** Die Simulation läuft kontinuierlich [4].
+**Lasse dieses Terminal geöffnet!** Die Simulation läuft kontinuierlich.
 
 ***
 
-### ✅ Schritt 3.4: Simulierte Daten überprüfen (Optional)
+### Schritt 3.4: Simulierte Daten überprüfen (Optional)
 
 **Terminal 2 öffnen** (lasse Terminal 1 laufen!):
 
@@ -250,13 +250,13 @@ mqttx sub -h broker.emqx.io -t wetter/schweiz/gruppe1
 }
 ```
 
-Drücke `Ctrl+C` zum Beenden [4][1].
+Drücke `Ctrl+C` zum Beenden.
 
 ***
 
 ## 💻 TEIL 4: Node.js Bridge programmieren (25 Min)
 
-### ✅ Schritt 4.1: Konfigurationsdatei erstellen
+### Schritt 4.1: Konfigurationsdatei erstellen
 
 Erstelle eine Datei `config.js` in deinem Projektordner:
 
@@ -295,7 +295,7 @@ module.exports = {
 
 ***
 
-### ✅ Schritt 4.2: Hauptprogramm erstellen
+### Schritt 4.2: Hauptprogramm erstellen
 
 Erstelle eine Datei `mqtt-to-mongodb.js`:
 
@@ -432,7 +432,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-**Datei speichern!** [3][8][1][2][9]
+**Datei speichern!** 
 
 ***
 
@@ -466,7 +466,7 @@ module.exports = {
 
 ## 🎯 TEIL 5: Daten speichern & analysieren (15 Min)
 
-### ✅ Schritt 5.1: System starten
+### Schritt 5.1: System starten
 
 **Du brauchst jetzt 2 Terminals:**
 
@@ -482,7 +482,7 @@ node mqtt-to-mongodb.js
 
 ***
 
-### ✅ Schritt 5.2: Erfolgreiche Ausführung überprüfen
+### Schritt 5.2: Erfolgreiche Ausführung überprüfen
 
 **Erwartete Ausgabe in Terminal 2:**
 
@@ -512,11 +512,11 @@ node mqtt-to-mongodb.js
 ─────────────────────────────────────────
 ```
 
-**✅ Wenn du diese Ausgabe siehst, funktioniert alles!** [3][1][9]
+**✅ Wenn du diese Ausgabe siehst, funktioniert alles!** 
 
 ***
 
-### ✅ Schritt 5.3: Daten in MongoDB Atlas überprüfen
+### Schritt 5.3: Daten in MongoDB Atlas überprüfen
 
 1. Gehe zurück zu https://cloud.mongodb.com
 2. Klicke auf "**Browse Collections**"
@@ -542,7 +542,7 @@ node mqtt-to-mongodb.js
 
 ***
 
-### ✅ Schritt 5.4: Erste MongoDB-Abfragen
+### Schritt 5.4: Erste MongoDB-Abfragen
 
 **Im Atlas Dashboard (Browse Collections):**
 
@@ -565,7 +565,7 @@ Klicke "**Apply**" nach jedem Filter [10].
 
 ***
 
-### ✅ Schritt 5.5: Aggregation - Durchschnittswerte berechnen
+### Schritt 5.5: Aggregation - Durchschnittswerte berechnen
 
 1. Im Atlas Dashboard: Klicke auf "**Aggregation**" Tab
 2. Klicke "**Add Stage**"
@@ -598,7 +598,7 @@ Klicke "**Apply**" nach jedem Filter [10].
 
 ***
 
-## 🎓 GRUPPENAUFGABEN & DISKUSSION
+## GRUPPENAUFGABEN & DISKUSSION
 
 ### Aufgabe 1: Datenvergleich zwischen Gruppen
 
@@ -657,7 +657,7 @@ Klicke "**Apply**" nach jedem Filter [10].
 npm install mqtt mongodb
 ```
 
-Stelle sicher, dass du im richtigen Ordner bist (`cd wetter-iot-projekt`) [1].
+Stelle sicher, dass du im richtigen Ordner bist (`cd wetter-iot-projekt`).
 
 ***
 
@@ -708,7 +708,7 @@ broker: 'mqtt://test.mosquitto.org:1883'
 **Lösung:**
 1. Überprüfe Network Access in Atlas:
    - Ist `0.0.0.0/0` hinzugefügt?
-2. Firewall/Proxy im Schulnetzwerk? → Informiere Lehrperson [5][6]
+2. Firewall/Proxy im Schulnetzwerk? → Informiere Lehrperson
 
 ***
 
@@ -735,7 +735,7 @@ broker: 'mqtt://test.mosquitto.org:1883'
 topic: 'wetter/schweiz/#'  // # = Wildcard für alle Unterordner
 ```
 
-Jetzt empfängst du Daten von ALLEN Gruppen! [1]
+Jetzt empfängst du Daten von ALLEN Gruppen!
 
 ***
 
@@ -768,7 +768,7 @@ async function analyseData() {
 analyseData();
 ```
 
-Ausführen: `node analyse.js` [2]
+Ausführen: `node analyse.js` 
 
 ***
 
@@ -812,33 +812,14 @@ app.listen(3000, () => {
 ```
 
 Ausführen: `node server.js`
-Öffne Browser: http://localhost:3000/api/latest [1][2]
+Öffne Browser: http://localhost:3000/api/latest 
 
 ***
 
-## 📚 ZUSÄTZLICHE RESSOURCEN
+## ZUSÄTZLICHE RESSOURCEN
 
-- MQTT Tutorial: https://www.emqx.com/en/blog/how-to-use-mqtt-in-nodejs [1]
-- MongoDB Node.js Driver Docs: https://www.mongodb.com/docs/drivers/node/ [2]
-- MQTTX CLI Docs: https://mqttx.app/docs/cli [4]
+- MQTT Tutorial: https://www.emqx.com/en/blog/how-to-use-mqtt-in-nodejs 
+- MongoDB Node.js Driver Docs: https://www.mongodb.com/docs/drivers/node/ 
+- MQTTX CLI Docs: https://mqttx.app/docs/cli 
 
 ***
-
-**🎉 Herzlichen Glückwunsch! Du hast erfolgreich ein IoT-System mit MQTT und MongoDB aufgebaut!** [3][9]
-
-Quellen
-[1] MQTT with Node.js: A Beginner's Guide with Examples & FAQs | EMQ https://www.emqx.com/en/blog/how-to-use-mqtt-in-nodejs
-[2] Connect to MongoDB - Node.js Driver https://www.mongodb.com/docs/drivers/node/current/connect/
-[3] MQTT to MongoDB: A Beginner's Guide for IoT Data Integration | EMQ https://www.emqx.com/en/blog/mqtt-and-mongodb-crafting-seamless-synergy-for-iot-data-mangement
-[4] Get Started - MQTTX CLI Documentation https://mqttx.app/docs/cli/get-started
-[5] Deploy a Free Cluster - Atlas - MongoDB Docs https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/
-[6] How to Seamlessly Setup MongoDB Atlas NodeJS in 3 ... https://hevodata.com/learn/mongodb-atlas-nodejs/
-[7] MQTTX 1.9.3 Introduces Powerful IoT Scenario Data ... https://www.emqx.com/en/blog/mqttx-1-9-3-introduces-powerful-iot-scenario-data-simulation-feature
-[8] Save your data using nodejs-mqtt-mongodb - Stories - Labs https://www.thethingsnetwork.org/labs/story/save-your-data-using-nodejs-mqtt-mongodb
-[9] Temperature Logging Using MQTT and MongoDB - Hackster.io https://www.hackster.io/14872/temperature-logging-using-mqtt-and-mongodb-a58cce
-[10] Sample Weather Dataset - Atlas - MongoDB Docs https://www.mongodb.com/docs/atlas/sample-data/sample-weather/
-[11] Integrating MQTT Data to MongoDB | Cedalo https://cedalo.com/blog/mqtt-to-mongodb-integration/
-[12] JavaScript-based MQTT #3: Mosca, MQTT.js & MongoDB - YouTube https://www.youtube.com/watch?v=-8NgIdT_OBc
-[13] MQTT broker + mongoDB - Stack Overflow https://stackoverflow.com/questions/24081873/mqtt-broker-mongodb
-[14] node.js - Subscription to MQTT broker and get the data being passed https://stackoverflow.com/questions/62064795/subscription-to-mqtt-broker-and-get-the-data-being-passed
-[15] Best way to store temperature data in mongodb https://stackoverflow.com/questions/8015764/best-way-to-store-temperature-data-in-mongodb
