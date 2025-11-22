@@ -1,5 +1,7 @@
 # IoT-Wetterdaten mit MQTT & MongoDB (Node.js)
 
+<img width="666" height="340" alt="image" src="https://github.com/user-attachments/assets/30a76a5f-16fa-44f8-a7e7-c056dd2efaf1" />
+
 ## 📋 Lernziele
 - MongoDB Atlas Cluster erstellen und verwalten
 - MQTT-Protokoll verstehen und IoT-Daten simulieren
