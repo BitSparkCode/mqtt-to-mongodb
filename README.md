@@ -577,9 +577,12 @@ Klicke "**Apply**" nach jedem Filter .
 ```json
 {
   "_id": null,
-  "durchschnitt_temperatur": { "$avg": "$temperature" },
-  "durchschnitt_luftfeuchtigkeit": { "$avg": "$humidity" },
-  "durchschnitt_luftdruck": { "$avg": "$pressure" },
+  "durchschnitt_temperatur_celsius": { "$avg": "$current.temp_c" },
+  "durchschnitt_luftfeuchtigkeit": { "$avg": "$current.humidity" },
+  "durchschnitt_luftdruck_mb": { "$avg": "$current.pressure_mb" },
+  "durchschnitt_windgeschwindigkeit_kph": { "$avg": "$current.wind_kph" },
+  "max_temperatur": { "$max": "$current.temp_c" },
+  "min_temperatur": { "$min": "$current.temp_c" },
   "anzahl_messungen": { "$sum": 1 }
 }
 ```
@@ -590,10 +593,13 @@ Klicke "**Apply**" nach jedem Filter .
 ```json
 {
   "_id": null,
-  "durchschnitt_temperatur": 16.8,
-  "durchschnitt_luftfeuchtigkeit": 72.3,
-  "durchschnitt_luftdruck": 1015.6,
-  "anzahl_messungen": 142
+  "durchschnitt_temperatur_celsius": 14.3,
+  "durchschnitt_luftfeuchtigkeit": 68.7,
+  "durchschnitt_luftdruck_mb": 1008.2,
+  "durchschnitt_windgeschwindigkeit_kph": 42.5,
+  "max_temperatur": 29.1,
+  "min_temperatur": -4.2,
+  "anzahl_messungen": 156
 }
 ```
 
