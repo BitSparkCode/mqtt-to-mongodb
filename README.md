@@ -81,7 +81,7 @@ added 25 packages, and audited 26 packages in 3s
 ### Schritt 1.5: MQTTX CLI installieren (für Simulation)
 
 ```bash
-npm install -g @emqx/mqttx-cli
+npm install -g mqttx-cli
 ```
 
 **Verifizierung:**
