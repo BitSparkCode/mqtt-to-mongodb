@@ -550,17 +550,17 @@ node mqtt-to-mongodb.js
 
 **Filter 1: Nur Temperaturen über 20°C anzeigen**
 ```json
-{ "temperature": { "$gt": 20 } }
+{ "current.temp_c": { "$gt": 20 } }
 ```
 
 **Filter 2: Daten der letzten 5 Minuten**
 ```json
-{ "empfangen_am": { "$gte": { "$date": "2025-11-22T08:49:00Z" } } }
+{ "empfangen_am": { "$gte": new Date(Date.now() - 5*60*1000) } }
 ```
 
 **Filter 3: Hohe Luftfeuchtigkeit (über 80%)**
 ```json
-{ "humidity": { "$gt": 80 } }
+{ "current.humidity": { "$gt": 80 } }
 ```
 
 Klicke "**Apply**" nach jedem Filter .
