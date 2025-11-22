@@ -291,7 +291,7 @@ module.exports = {
 2. `clientId`: Deine Gruppennummer
 3. `uri`: Dein Connection String aus Schritt 2.5
 
-**Datei speichern!** [3][1][2]
+**Datei speichern!** 
 
 ***
 
@@ -561,7 +561,7 @@ node mqtt-to-mongodb.js
 { "humidity": { "$gt": 80 } }
 ```
 
-Klicke "**Apply**" nach jedem Filter [10].
+Klicke "**Apply**" nach jedem Filter .
 
 ***
 
@@ -671,7 +671,7 @@ Stelle sicher, dass du im richtigen Ordner bist (`cd wetter-iot-projekt`).
 3. **Sonderzeichen** im Passwort? Verwende URL-Encoding:
    - `@` → `%40`
    - `#` → `%23`
-   - `!` → `%21` [2][6]
+   - `!` → `%21` 
 
 ***
 
@@ -769,50 +769,6 @@ analyseData();
 ```
 
 Ausführen: `node analyse.js` 
-
-***
-
-### Challenge 3: Echtzeit-Dashboard
-
-Installiere zusätzliches Paket:
-```bash
-npm install express
-```
-
-Erstelle `server.js`:
-
-```javascript
-const express = require('express');
-const { MongoClient } = require('mongodb');
-const config = require('./config');
-
-const app = express();
-let collection;
-
-// MongoDB verbinden
-MongoClient.connect(config.mongodb.uri).then(client => {
-  collection = client.db(config.mongodb.database)
-                     .collection(config.mongodb.collection);
-  console.log('✅ MongoDB verbunden');
-});
-
-// API-Endpunkt: Neueste 10 Messungen
-app.get('/api/latest', async (req, res) => {
-  const data = await collection.find()
-                               .sort({ empfangen_am: -1 })
-                               .limit(10)
-                               .toArray();
-  res.json(data);
-});
-
-// Server starten
-app.listen(3000, () => {
-  console.log('🌐 Dashboard läuft auf http://localhost:3000/api/latest');
-});
-```
-
-Ausführen: `node server.js`
-Öffne Browser: http://localhost:3000/api/latest 
 
 ***
 
