@@ -16,6 +16,9 @@
 - **Teil 4:** Node.js Bridge programmieren (25 Min)
 - **Teil 5:** Daten speichern & analysieren (15 Min)
 
+
+![Was ist MQTT?]([pfad/zu/ihrem/video.mp4](https://www.youtube.com/watch?v=qCdo2oFVe1I)) 
+
 ***
 
 ## 📦 TEIL 1: Installation & Setup (20 Min)
