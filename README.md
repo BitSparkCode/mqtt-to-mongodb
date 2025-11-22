@@ -208,7 +208,7 @@ IEM       | Simulation to generate Industrial Energy Monitoring data
 **Terminal 1 öffnen** und Simulation starten:
 
 ```bash
-mqttx simulate weather -c 5 -h broker.emqx.io -t wetter/schweiz/gruppe1
+mqttx simulate -sc weather -c 5 -h broker.emqx.io -t wetter/schweiz/gruppe1
 ```
 
 **Parameter-Erklärung:**
