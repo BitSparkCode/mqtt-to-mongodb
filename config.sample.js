@@ -5,10 +5,10 @@ module.exports = {
     topic: 'wetter/schweiz/gruppe1', // ⚠️ Anpassen für deine Gruppe!
     clientId: 'wetter_subscriber_gruppe1' // ⚠️ Anpassen für deine Gruppe!
   },
-  
+
   // MongoDB Verbindung
   mongodb: {
-    uri: 'mongodb+srv://wetter_user:DEIN_PASSWORT@weather-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority', // ⚠️ Connection String aus Schritt 2.5 einfügen!
+    uri: 'mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/?retryWrites=true&w=majority', // ⚠️ Connection String aus MongoDB Atlas einfügen!
     database: 'wetter_datenbank',
     collection: 'wetter_messungen'
   }
