@@ -260,15 +260,19 @@ Drücke `Ctrl+C` zum Beenden.
 
 ### Schritt 4.1: Konfigurationsdatei erstellen
 
-Erstelle eine Datei `config.js` in deinem Projektordner:
+**Kopiere die Vorlage und passe sie an:**
 
 ```bash
-code config.js
+# Auf Mac/Linux:
+cp config.sample.js config.js
+
+# Auf Windows (PowerShell):
+Copy-Item config.sample.js config.js
+
+# Oder manuell: config.sample.js → config.js kopieren
 ```
 
-(Oder öffne mit einem beliebigen Texteditor: Notepad, VS Code, Atom, etc.)
-
-**Inhalt von `config.js`:**
+**Öffne `config.js` und passe folgende Werte an:**
 
 ```javascript
 module.exports = {
@@ -278,7 +282,7 @@ module.exports = {
     topic: 'wetter/schweiz/gruppe1', // ⚠️ Anpassen für deine Gruppe!
     clientId: 'wetter_subscriber_gruppe1' // ⚠️ Anpassen für deine Gruppe!
   },
-  
+
   // MongoDB Verbindung
   mongodb: {
     uri: 'mongodb+srv://wetter_user:DEIN_PASSWORT@weather-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority', // ⚠️ Connection String aus Schritt 2.5 einfügen!
@@ -289,9 +293,11 @@ module.exports = {
 ```
 
 **⚠️ WICHTIG - Folgende Werte anpassen:**
-1. `topic`: Deine Gruppennummer
+1. `topic`: Deine Gruppennummer (z.B. `gruppe2`, `gruppe3`)
 2. `clientId`: Deine Gruppennummer
-3. `uri`: Dein Connection String aus Schritt 2.5
+3. `uri`: Dein Connection String aus Schritt 2.5 (Passwort einfügen!)
+
+**⚠️ SICHERHEIT:** `config.js` enthält dein Passwort und wird **nicht** mit Git geteilt (bereits in `.gitignore` eingetragen).
 
 **Datei speichern!** 
 
@@ -778,6 +784,205 @@ analyseData();
 ```
 
 Ausführen: `node analyse.js` 
+
+***
+
+### Challenge 3: Smart Home Sensoren simulieren
+
+**🎯 Ziel:** Zusätzliche IoT-Sensoren mit MQTTX simulieren und speichern.
+
+#### 3.1 Raumklima-Sensor (Temperatur & Luftfeuchtigkeit)
+
+**Terminal-Befehl (Bash/PowerShell):**
+
+```bash
+while true; do
+  TEMP=$(awk 'BEGIN{printf "%.1f", 18+8*rand()}')
+  HUMIDITY=$(shuf -i 35-75 -n 1)
+  TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  mqttx pub -t 'home/wohnzimmer/klima' -h broker.emqx.io \
+    -m "{\"temp_c\": $TEMP, \"humidity_percent\": $HUMIDITY, \"timestamp\": \"$TIMESTAMP\", \"sensor\": \"dht22\"}"
+  sleep 5
+done
+```
+
+**Oder einzelner Test-Befehl:**
+```bash
+mqttx pub -t 'home/wohnzimmer/klima' -h broker.emqx.io \
+  -m '{"temp_c": 22.5, "humidity_percent": 58, "sensor": "dht22"}'
+```
+
+**MongoDB Filter-Beispiele:**
+```json
+// Zu warme Räume (> 24°C)
+{ "temp_c": { "$gt": 24 }, "mqtt_topic": "home/wohnzimmer/klima" }
+
+// Zu trockene Luft (< 40%)
+{ "humidity_percent": { "$lt": 40 } }
+```
+
+***
+
+#### 3.2 Bodenfeuchte-Sensor (Pflanzenüberwachung)
+
+**Einmalige Testdaten:**
+
+```bash
+# Gut bewässert
+mqttx pub -t 'garten/pflanzen/bodenfeuchte' -h broker.emqx.io \
+  -m '{"sensor_id": "pflanze_wohnzimmer", "feuchte_prozent": 65, "status": "optimal", "alarm": false}'
+
+# Kritisch trocken
+mqttx pub -t 'garten/pflanzen/bodenfeuchte' -h broker.emqx.io \
+  -m '{"sensor_id": "pflanze_balkon", "feuchte_prozent": 18, "status": "kritisch", "alarm": true}'
+```
+
+**Kontinuierliche Simulation:**
+```bash
+while true; do
+  FEUCHTE=$(shuf -i 15-80 -n 1)
+  if [ $FEUCHTE -lt 30 ]; then STATUS="kritisch"; ALARM="true"; else STATUS="ok"; ALARM="false"; fi
+  mqttx pub -t 'garten/pflanzen/bodenfeuchte' -h broker.emqx.io \
+    -m "{\"feuchte_prozent\": $FEUCHTE, \"status\": \"$STATUS\", \"alarm\": $ALARM, \"zeit\": \"$(date -Iseconds)\"}"
+  sleep 8
+done
+```
+
+***
+
+#### 3.3 Fenster-/Türkontakt (Sicherheit)
+
+```bash
+# Fenster schliessen
+mqttx pub -t 'home/sicherheit/fenster/balkon' -h broker.emqx.io \
+  -m '{"status": "geschlossen", "zeit": "2024-01-15T14:30:00Z", "battery_percent": 87, "device": "aqara_kontakt_01"}'
+
+# Fenster öffnen
+mqttx pub -t 'home/sicherheit/fenster/balkon' -h broker.emqx.io \
+  -m '{"status": "geoeffnet", "zeit": "2024-01-15T14:35:00Z", "battery_percent": 86, "device": "aqara_kontakt_01"}'
+```
+
+**Filter für offene Fenster:**
+```json
+{ "status": "geoeffnet", "mqtt_topic": { "$regex": "sicherheit/fenster" } }
+```
+
+***
+
+#### 3.4 Smart Meter (Energieverbrauch)
+
+```bash
+while true; do
+  LEISTUNG=$(shuf -i 150-3200 -n 1)
+  mqttx pub -t 'stromzaehler/wohnung/total' -h broker.emqx.io \
+    -m "{\"leistung_watt\": $LEISTUNG, \"verbrauch_kwh_total\": 1247.3, \"preis_chf_pro_kwh\": 0.25, \"timestamp\": $(date +%s)}"
+  sleep 10
+done
+```
+
+**Aggregation - Durchschnittsverbrauch:**
+```json
+{
+  "_id": null,
+  "avg_verbrauch_watt": { "$avg": "$leistung_watt" },
+  "max_leistung": { "$max": "$leistung_watt" },
+  "messungen": { "$sum": 1 }
+}
+```
+
+***
+
+#### 3.5 Lautstärke-Sensor (Büro/Home Office)
+
+```bash
+# Laute Umgebung (Gespräch)
+mqttx pub -t 'buero/lautstaerke/messung' -h broker.emqx.io \
+  -m '{"dezibel": 62, "kategorie": "moderat", "empfehlung": "Kopfhoerer empfohlen", "timestamp": "'$(date -Iseconds)'"}'
+
+# Leise Umgebung
+mqttx pub -t 'buero/lautstaerke/messung' -h broker.emqx.io \
+  -m '{"dezibel": 38, "kategorie": "leise", "empfehlung": "OK", "timestamp": "'$(date -Iseconds)'"}'
+```
+
+***
+
+### Challenge 4: Multi-Sensor Bridge erweitern
+
+**🎯 Ziel:** Die Node.js Bridge für mehrere Topics erweitern.
+
+**Ändere in `config.js`:**
+```javascript
+mqtt: {
+  broker: 'mqtt://broker.emqx.io:1883',
+  topics: [
+    'wetter/schweiz/gruppe1',
+    'home/+/klima',      // + = Wildcard für einen Level
+    'garten/pflanzen/bodenfeuchte',
+    'home/sicherheit/fenster/#'  // # = Wildcard für alle Untertopics
+  ],
+  clientId: 'multi_sensor_subscriber_gruppe1'
+}
+```
+
+**Ändere in `mqtt-to-mongodb.js`:**
+```javascript
+// Topics abonnieren
+config.mqtt.topics.forEach(topic => {
+  mqttClient.subscribe(topic, (err) => {
+    if (err) console.error(`❌ Fehler bei ${topic}:`, err.message);
+    else console.log(`📬 Abonniert: ${topic}`);
+  });
+});
+```
+
+***
+
+### Challenge 5: Sensor-Typen automatisch erkennen
+
+**🎯 Ziel:** Im `mqtt-to-mongodb.js` automatisch den Sensor-Typ aus dem Topic ableiten.
+
+**Code-Erweiterung:**
+```javascript
+mqttClient.on('message', async (topic, message) => {
+  try {
+    const payload = JSON.parse(message.toString());
+    
+    // Sensor-Typ aus Topic ableiten
+    let sensorTyp = 'unbekannt';
+    if (topic.includes('wetter')) sensorTyp = 'wetterstation';
+    else if (topic.includes('klima')) sensorTyp = 'raumklima';
+    else if (topic.includes('bodenfeuchte')) sensorTyp = 'pflanzensensor';
+    else if (topic.includes('sicherheit')) sensorTyp = 'sicherheit';
+    else if (topic.includes('stromzaehler')) sensorTyp = 'energiezaehler';
+    
+    const document = {
+      ...payload,
+      mqtt_topic: topic,
+      sensor_typ: sensorTyp,  // ← Neues Feld!
+      empfangen_am: new Date(),
+      gruppe: config.mqtt.clientId
+    };
+    
+    const result = await collection.insertOne(document);
+    console.log(`✅ [${sensorTyp}] Gespeichert | ID: ${result.insertedId}`);
+    
+  } catch (error) {
+    console.error('❌ Fehler:', error.message);
+  }
+});
+```
+
+**MongoDB-Abfrage pro Sensor-Typ:**
+```json
+// Nur Raumklima-Daten
+{ "sensor_typ": "raumklima" }
+
+// Alle Sicherheitsereignisse
+{ "sensor_typ": "sicherheit", "status": "geoeffnet" }
+
+// Aggregation nach Sensor-Typ
+{ "$group": { "_id": "$sensor_typ", "anzahl": { "$sum": 1 } } }
+```
 
 ***
 
